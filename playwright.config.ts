@@ -28,13 +28,22 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    headless: false, // set headless feature on/off, True by default
+    screenshot: 'only-on-failure', // turn on/off the screenshot feature
+    video: 'retain-on-failure', // Turn on/off the video capability
+    launchOptions: {
+      args: ['--start-maximized'] // Set window size to maximize
+    }
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        //...devices['Desktop Chrome'],
+        viewport: null, 
+      },
     },
 
     {
@@ -46,7 +55,7 @@ export default defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
-
+    
     /* Test against mobile viewports. */
     // {
     //   name: 'Mobile Chrome',
