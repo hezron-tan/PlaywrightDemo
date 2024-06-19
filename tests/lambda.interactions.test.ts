@@ -4,10 +4,14 @@ test.describe('Interactions', ()=> {
     test("Sliders", { tag: '@smoketest' } , async ( { page }) => {
         await page.goto("https://www.lambdatest.com/selenium-playground/drag-drop-range-sliders-demo");
 
+        // Set parent locator
         const sliders = page.locator("//h4").all();
+        
+        // Set temporary variables
         let defaultValue = "";
         let randomNumber = 0;
 
+        // For each sliders
         for (let slider of await sliders) {
             // Verify default value
             defaultValue = (await slider.innerText()).replace('Default value ', '');
@@ -22,7 +26,41 @@ test.describe('Interactions', ()=> {
     
     test("JS Alerts", async ( { page }) => {
         await page.goto("https://www.lambdatest.com/selenium-playground/javascript-alert-box-demo");
-    
+
+        const clickMeButtons = page.locator("//p//button");
+        
+        let dialogMessage =  "";
+        clickMeButtons.first()
+        page.once('dialog', dialog => {
+            dialogMessage = dialog.message();
+            dialog.dismiss().catch(() => {});
+        });
+
+        await clickMeButtons.first().click();
+        expect(dialogMessage).toMatch('I am an alert box!');
+        
+        page.once('dialog', dialog => {
+            dialog.accept().catch(() => {});
+        });
+
+        await clickMeButtons.nth(1).click();
+        await expect(page.locator('#confirm-demo')).toContainText('You pressed OK!');
+
+        page.once('dialog', dialog => {
+            dialog.dismiss().catch(() => {});
+        });
+
+        await clickMeButtons.nth(1).click();
+        await expect(page.locator('#confirm-demo')).toContainText('You pressed Cancel!');
+
+        let name = "Hez";
+        page.once('dialog', dialog => {
+            dialog.accept(name).catch(() => {});
+        });
+
+        await clickMeButtons.last().click();
+        await expect(page.locator('#prompt-demo')).toContainText(`You have entered \'${name}\' !`);
+        page.close();
     })
     
     test("Drap & Drop", async ( { page }) => {
