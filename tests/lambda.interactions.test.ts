@@ -1,4 +1,5 @@
 import { expect, test } from "playwright/test";
+import { DataEntryHelper } from "../helper/data.entry.helper";
 
 test.describe('Interactions', ()=> {
     test("Sliders", { tag: '@smoketest' } , async ( { page }) => {
@@ -53,7 +54,8 @@ test.describe('Interactions', ()=> {
         await clickMeButtons.nth(1).click();
         await expect(page.locator('#confirm-demo')).toContainText('You pressed Cancel!');
 
-        let name = "Hez";
+        var d = new DataEntryHelper();
+        let name = await d.generateFirstName();
         page.once('dialog', dialog => {
             dialog.accept(name).catch(() => {});
         });

@@ -11,5 +11,8 @@
     "@playwright/test": "^1.44.1",
     "@types/node": "^20.14.2",
     "playwright": "^1.44.1"
+  },
+  "dependencies": {
+    "faker": "^5.5.3"
   }
 }
