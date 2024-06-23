@@ -2,7 +2,8 @@ import { expect, test } from "playwright/test";
 import { DataEntryHelper } from "../helper/data.entry.helper";
 import { Person } from "../datamodel/person.model";
 import exp from "constants";
-import { TableSortSearchPageModel } from "../pages/tablesortsearch-page-model";
+import { HeaderOption, TableSortSearchPageModel } from "../pages/tablesortsearch-page-model";
+import { table } from "console";
 
 test.describe('Interactions', ()=> {
     test("Sliders", { tag: '@smoketest' } , async ( { page }) => {
@@ -177,8 +178,8 @@ test.describe('Interactions', ()=> {
 
     })
 
-    test("Page Model Refactored Search Sort Test", async ( {page} ) => {
-        const tableSortSearchPage = new TableSortSearchPageModel(page);
+    test("Page Model Refactored Search Test", async ( {page} ) => {
+        const tableSortSearchPage : TableSortSearchPageModel = new TableSortSearchPageModel(page);
         await tableSortSearchPage.navigateToPage();
 
         // Get all entries
@@ -193,8 +194,6 @@ test.describe('Interactions', ()=> {
 
         // Verify search bar is available
         await expect(tableSortSearchPage.searchBar).toBeVisible();
-
-        // To do: Add Sorting Test
 
         // Verify search by name
         let searchByName : Person = persons[Math.floor(Math.random() * persons.length)];
@@ -228,7 +227,67 @@ test.describe('Interactions', ()=> {
         }
     })
 
-    test.afterAll('Teardown',async( {page}) => {
+    test("Sorting Test", async( {page} ) => {
+        const tableSortSearchPage : TableSortSearchPageModel = new TableSortSearchPageModel(page);
+        await tableSortSearchPage.navigateToPage();
+
+        // Get all entries
+        let persons : Person[] = [];
+        persons = await tableSortSearchPage.getResults();
+
+        // Navigate back to page 1
+        await tableSortSearchPage.clickPageNumber(1);
+
+        // Verify sorted by Name by Default
+        persons.sort((a, b) => a.name.localeCompare(b.name));
+        let sortedDataPerson : Person[] = [];
+        sortedDataPerson = await tableSortSearchPage.getResults();
+        expect(sortedDataPerson).toMatchObject(persons);
+
+        // Verify sorting by Name Desc
+        await tableSortSearchPage.clickHeader(HeaderOption.Name);
+        persons.sort((a, b) => b.name.localeCompare(a.name));
+        sortedDataPerson = await tableSortSearchPage.getResults();
+        expect(sortedDataPerson).toMatchObject(persons);
+
+        // Verify sorting by Position Asc
+        await tableSortSearchPage.clickHeader(HeaderOption.Position);
+        persons.sort((a, b) => a.position.localeCompare(b.position));
+        sortedDataPerson = await tableSortSearchPage.getResults();
+        expect(sortedDataPerson).toMatchObject(persons);
+
+        // Verify sorting by Position Desc
+        await tableSortSearchPage.clickHeader(HeaderOption.Position);
+        persons.sort((a, b) => b.position.localeCompare(a.position));
+        sortedDataPerson = await tableSortSearchPage.getResults();
+        expect(sortedDataPerson).toMatchObject(persons);
+
+        // Verify sorting by Office Asc
+        await tableSortSearchPage.clickHeader(HeaderOption.Office);
+        persons.sort((a, b) => a.office.localeCompare(b.office));
+        sortedDataPerson = await tableSortSearchPage.getResults();
+        expect(sortedDataPerson).toMatchObject(persons);
+
+        // Verify sorting by Office Desc
+        await tableSortSearchPage.clickHeader(HeaderOption.Office);
+        persons.sort((a, b) => b.office.localeCompare(a.office));
+        sortedDataPerson = await tableSortSearchPage.getResults();
+        expect(sortedDataPerson).toMatchObject(persons);
+
+        // Verify sorting by Age Asc
+        await tableSortSearchPage.clickHeader(HeaderOption.Age);
+        persons.sort((a, b) => a.age - b.age);
+        sortedDataPerson = await tableSortSearchPage.getResults();
+        expect(sortedDataPerson).toMatchObject(persons);
+
+        // Verify sorting by Age Desc
+        await tableSortSearchPage.clickHeader(HeaderOption.Age);
+        persons.sort((a, b) => b.age - a.age);
+        sortedDataPerson = await tableSortSearchPage.getResults();
+        expect(sortedDataPerson).toMatchObject(persons);
+    })
+
+    test.afterAll('Teardown',async( {page} ) => {
         page.close();
     })
 

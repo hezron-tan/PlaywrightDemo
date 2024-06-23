@@ -4,6 +4,7 @@ import { Person } from "../datamodel/person.model";
 
 
 export class TableSortSearchPageModel extends BasePageModel {
+    
     readonly page: Page;
     readonly nextButton: Locator;
     readonly entriesLabel: Locator;
@@ -63,7 +64,24 @@ export class TableSortSearchPageModel extends BasePageModel {
         } while(!await this.page.locator('a.previous.disabled').isVisible());
     }
 
+    async clickHeader(option: HeaderOption) {
+        await this.page.locator(`//th[${option}]`).click();
+    }
+
+    async clickPageNumber(page: number) {
+        await this.page.locator(`//a[text()='${page}']`).click();
+    }
+
     async navigateToPage() {
         await this.page.goto("https://www.lambdatest.com/selenium-playground/table-sort-search-demo");
     }
+
+    
+}
+
+export enum HeaderOption {
+    Name = 1,
+    Position = 2,
+    Office = 3,
+    Age = 4        
 }
