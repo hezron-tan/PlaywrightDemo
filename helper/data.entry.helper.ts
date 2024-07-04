@@ -1,4 +1,4 @@
-const faker = require('faker');
+import faker from 'faker';
 
 export class DataEntryHelper {
     generateFirstName = async() =>{
@@ -15,5 +15,17 @@ export class DataEntryHelper {
     
     generateCity = async() => {
         return await faker.address.city();
+    }
+
+    generatePastDate = async() => {
+        return await faker.date.past();
+    }
+
+    generateFuturetDate = async() => {
+        return await faker.date.future();
+    }
+
+    generateRandomMessage = async () => {
+        return await faker.lorem.lines(1);
     }
 }

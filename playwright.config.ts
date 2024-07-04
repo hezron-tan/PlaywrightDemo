@@ -33,7 +33,8 @@ export default defineConfig({
     video: 'retain-on-failure', // Turn on/off the video capability
     launchOptions: {
       args: ['--start-maximized'] // Set window size to maximize
-    }
+    },
+    baseURL: 'https://restful-booker.herokuapp.com'
   },
 
   /* Configure projects for major browsers */
