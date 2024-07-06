@@ -27,13 +27,12 @@ test("Get Method with Data Model", async ({request}) => {
 })
 
 test("Post Method", async ({request}) => {
-    let d = new DataEntryHelper();
-    let firstName = await d.generateFirstName();
-    let lastName = await d.generateLastName();
+    let firstName = await DataEntryHelper.generateFirstName();
+    let lastName = await DataEntryHelper.generateLastName();
     let totalPrice = Math.floor(Math.random() * 500);
-    let checkin = await d.generatePastDate();
-    let checkout = await d.generateFuturetDate();
-    let additionalNeeds = await d.generateRandomMessage();
+    let checkin = await DataEntryHelper.generatePastDate();
+    let checkout = await DataEntryHelper.generateFuturetDate();
+    let additionalNeeds = await DataEntryHelper.generateRandomMessage();
     let bookingDates = new BookingDates(checkin, checkout);
     let booking = new Booking(firstName, lastName, totalPrice, true, bookingDates, additionalNeeds);
 
@@ -44,7 +43,7 @@ test("Post Method", async ({request}) => {
     expect(bookingResponse.booking.firstname).toContain(firstName);
     expect(bookingResponse.booking.lastname).toContain(lastName);
     expect(bookingResponse.booking.totalprice).toEqual(totalPrice);
-    // expect(bookingResponse.booking.bookingdates.checkin).toContain(new Date(checkin).toISOString());
-    // expect(bookingResponse.booking.bookingdates.checkout).toContain(checkin);
+    expect(bookingResponse.booking.bookingdates.checkin).toContain(new Date(checkin).toISOString().split('T')[0]);
+    expect(bookingResponse.booking.bookingdates.checkout).toContain(new Date(checkout).toISOString().split('T')[0]);
     expect(bookingResponse.booking.additionalneeds).toContain(additionalNeeds);
 })

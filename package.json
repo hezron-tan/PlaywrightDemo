@@ -8,11 +8,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@playwright/test": "^1.44.1",
+    "@types/faker": "^6.6.9",
     "@types/node": "^20.14.2",
+    "faker": "^5.5.3",
     "playwright": "^1.44.1"
-  },
-  "dependencies": {
-    "faker": "^5.5.3"
   }
 }

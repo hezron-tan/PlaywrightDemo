@@ -4,6 +4,7 @@ import { Person } from "../datamodel/person.model";
 import exp from "constants";
 import { HeaderOption, TableSortSearchPageModel } from "../pages/tablesortsearch-page-model";
 import { table } from "console";
+import { DatePickerPageModel } from "../pages/date-picker-page-model";
 
 test.describe('Interactions', ()=> {
     test("Sliders", { tag: '@smoketest' } , async ( { page }) => {
@@ -58,8 +59,7 @@ test.describe('Interactions', ()=> {
         await clickMeButtons.nth(1).click();
         await expect(page.locator('#confirm-demo')).toContainText('You pressed Cancel!');
 
-        var d = new DataEntryHelper();
-        let name = await d.generateFirstName();
+        let name = await DataEntryHelper.generateFirstName();
         page.once('dialog', dialog => {
             dialog.accept(name).catch(() => {});
         });
@@ -71,22 +71,45 @@ test.describe('Interactions', ()=> {
     test("Drap & Drop", async ( { page }) => {
         await page.goto("https://www.lambdatest.com/selenium-playground/drag-and-drop-demo");
 
+        const dragabbles = page.locator('#todrag span');
+        const dropzone = page.locator('#mydropzone');
+        const droplist = page.locator('#droppedlist');
+        
+        while ((await dragabbles.all()).length != 0) {
+            let itemName = await dragabbles.first().innerText();
+            await dragabbles.first().dragTo(dropzone);
+            await expect(droplist).toContainText(itemName);
+        } 
+
+        const demo2Dragabble = page.locator('#draggable');
+        const droppable = page.locator('#droppable');
+
+        await demo2Dragabble.dragTo(droppable);
+        await expect(droppable).toContainText('Dropped');
     })
 
     test("Date Picker", async ( {page}) => {
         await page.goto("https://www.lambdatest.com/selenium-playground/bootstrap-date-picker-demo");
 
+        const birthdayDatePicker = page.locator('#birthday');
+        let birthDate = new Date(await DataEntryHelper.generateBirthDate()).toISOString().split('T')[0];
+        await birthdayDatePicker.fill(birthDate);
+        expect(birthdayDatePicker).toHaveValue(birthDate);
 
-    })
+        const datePicker = page.locator("//div[@class='datepicker-days']/table");
+        const startDateField = page.locator('//*[@id="datepicker"]/input[1]');
+        const endDateField = page.locator('//*[@id="datepicker"]/input[2]');
+        let startDate = await DataEntryHelper.generatePastDate();
+        let endDate = await DataEntryHelper.generateFuturetDate();
 
-    test("Data List Filter", async ( {page} ) => {
-        await page.goto("https://www.lambdatest.com/selenium-playground/data-list-filter-demo");
+        await startDateField.click();
+        await expect(datePicker).toBeVisible();
 
+        await endDateField.click();
+        await expect(datePicker).toBeVisible();
     })
 
     test("Table sort and search", async ( {page} ) => {
-        // const tablerSortSearchPage = new TableSortSearchPageModel(page);
-        // tablerSortSearchPage.navigateToPage();
         page.goto("https://www.lambdatest.com/selenium-playground/table-sort-search-demo");
         
         let persons : Person[] = [];
