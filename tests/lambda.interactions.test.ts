@@ -1,10 +1,9 @@
 import { expect, test } from "playwright/test";
 import { DataEntryHelper } from "../helper/data.entry.helper";
 import { Person } from "../datamodel/person.model";
-import exp from "constants";
 import { HeaderOption, TableSortSearchPageModel } from "../pages/tablesortsearch-page-model";
-import { table } from "console";
-import { DatePickerPageModel } from "../pages/date-picker-page-model";
+import { DatePickerPageModel } from "../pages/datepicker-page-model";
+import { start } from "repl";
 
 test.describe('Interactions', ()=> {
     test("Sliders", { tag: '@smoketest' } , async ( { page }) => {
@@ -59,7 +58,7 @@ test.describe('Interactions', ()=> {
         await clickMeButtons.nth(1).click();
         await expect(page.locator('#confirm-demo')).toContainText('You pressed Cancel!');
 
-        let name = await DataEntryHelper.generateFirstName();
+        let name = DataEntryHelper.generateFirstName();
         page.once('dialog', dialog => {
             dialog.accept(name).catch(() => {});
         });
@@ -88,26 +87,28 @@ test.describe('Interactions', ()=> {
         await expect(droppable).toContainText('Dropped');
     })
 
-    test("Date Picker", async ( {page}) => {
-        await page.goto("https://www.lambdatest.com/selenium-playground/bootstrap-date-picker-demo");
+    test("Simple Date Picker", async ( {page}) => {
+       await page.goto("https://www.lambdatest.com/selenium-playground/bootstrap-date-picker-demo");
 
         const birthdayDatePicker = page.locator('#birthday');
-        let birthDate = new Date(await DataEntryHelper.generateBirthDate()).toISOString().split('T')[0];
+        let birthDate = new Date(DataEntryHelper.generateBirthDate()).toISOString().split('T')[0];
         await birthdayDatePicker.fill(birthDate);
-        expect(birthdayDatePicker).toHaveValue(birthDate);
-
-        const datePicker = page.locator("//div[@class='datepicker-days']/table");
-        const startDateField = page.locator('//*[@id="datepicker"]/input[1]');
-        const endDateField = page.locator('//*[@id="datepicker"]/input[2]');
-        let startDate = await DataEntryHelper.generatePastDate();
-        let endDate = await DataEntryHelper.generateFuturetDate();
-
-        await startDateField.click();
-        await expect(datePicker).toBeVisible();
-
-        await endDateField.click();
-        await expect(datePicker).toBeVisible();
+        await expect(birthdayDatePicker).toHaveValue(birthDate);
     })
+
+    test("Date Picker Refactored", async ( {page}) => {
+        const datePickerPage: DatePickerPageModel = new DatePickerPageModel(page);
+        await datePickerPage.navigateToPage("https://www.lambdatest.com/selenium-playground/bootstrap-date-picker-demo");
+
+        let startDate = DataEntryHelper.generatePastDate();
+        let endDate = DataEntryHelper.generateFuturetDate();
+ 
+        startDate = await datePickerPage.selectStartDate(startDate);
+        await expect(datePickerPage.startDateField).toHaveValue(startDate.toLocaleDateString("en-NZ", { day: "2-digit", month: "2-digit", year: "numeric"}));
+
+        endDate = await datePickerPage.selectEndDate(endDate);
+        await expect(datePickerPage.endDateField).toHaveValue(endDate.toLocaleDateString("en-NZ", { day: "2-digit", month: "2-digit", year: "numeric"}));
+     })
 
     test("Table sort and search", async ( {page} ) => {
         page.goto("https://www.lambdatest.com/selenium-playground/table-sort-search-demo");
@@ -310,7 +311,7 @@ test.describe('Interactions', ()=> {
         expect(sortedDataPerson).toMatchObject(persons);
     })
 
-    test.afterAll('Teardown',async( {page} ) => {
+    test.afterEach('Teardown',async( {page} ) => {
         page.close();
     })
 

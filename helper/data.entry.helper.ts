@@ -1,35 +1,39 @@
 import { faker } from '@faker-js/faker';
 
 export class DataEntryHelper {
-    static generateFirstName = async() =>{
-        return await faker.person.firstName();
+    static generateFirstName = () =>{
+        return faker.person.firstName();
     }
     
-    static generateLastName = async() => {
-        return await faker.person.lastName();
+    static generateLastName = () => {
+        return faker.person.lastName();
     }
     
-    static generateAddress = async() => {
-        return await faker.location.streetAddress();
+    static generateAddress = () => {
+        return faker.location.streetAddress();
     }
     
-    static generateCity = async() => {
-        return await faker.location.city();
+    static generateCity = () => {
+        return faker.location.city();
     }
 
-    static generatePastDate = async() => {
-        return await faker.date.past();
+    static generatePastDate = () => {
+        return faker.date.past();
     }
 
-    static generateFuturetDate = async() => {
-        return await faker.date.future();
+    static generateFuturetDate = () => {
+        return faker.date.future();
     }
 
-    static generateRandomMessage = async () => {
-        return await faker.lorem.lines(1);
+    static generateRandomMessage =  () => {
+        return faker.lorem.lines(1);
     }
 
-    static generateBirthDate = async() => {
-        return await faker.date.birthdate();
+    static generateBirthDate = () => {
+        return faker.date.birthdate();
+    }
+
+    static generateRandomDay = () => {
+        return faker.number.bigInt({ min: 1, max: 28}); 
     }
 }

@@ -6,4 +6,8 @@ export class BasePageModel {
     constructor(page: Page) {
         this.page = page;
     }
+
+    async navigateToPage(url: string) {
+        await this.page.goto(url);
+    }
 }

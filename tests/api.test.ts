@@ -27,12 +27,12 @@ test("Get Method with Data Model", async ({request}) => {
 })
 
 test("Post Method", async ({request}) => {
-    let firstName = await DataEntryHelper.generateFirstName();
-    let lastName = await DataEntryHelper.generateLastName();
+    let firstName = DataEntryHelper.generateFirstName();
+    let lastName = DataEntryHelper.generateLastName();
     let totalPrice = Math.floor(Math.random() * 500);
-    let checkin = await DataEntryHelper.generatePastDate();
-    let checkout = await DataEntryHelper.generateFuturetDate();
-    let additionalNeeds = await DataEntryHelper.generateRandomMessage();
+    let checkin = DataEntryHelper.generatePastDate();
+    let checkout = DataEntryHelper.generateFuturetDate();
+    let additionalNeeds = DataEntryHelper.generateRandomMessage();
     let bookingDates = new BookingDates(checkin, checkout);
     let booking = new Booking(firstName, lastName, totalPrice, true, bookingDates, additionalNeeds);
 

@@ -72,6 +72,7 @@ export class TableSortSearchPageModel extends BasePageModel {
         await this.page.locator(`//a[text()='${page}']`).click();
     }
 
+    // Override method
     async navigateToPage() {
         await this.page.goto("https://www.lambdatest.com/selenium-playground/table-sort-search-demo");
     }
